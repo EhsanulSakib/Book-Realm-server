@@ -27,6 +27,12 @@ async function run() {
     // crafts database
     const booksCollection = client.db("bookRealmDB").collection('books');
     
+    app.get('/books', async(req,res) =>{
+      const cursor = booksCollection.find();
+      const result = await cursor.toArray();
+
+      res.send(result)
+  })
     
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
