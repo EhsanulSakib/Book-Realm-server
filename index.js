@@ -26,6 +26,7 @@ async function run() {
 
     // crafts database
     const booksCollection = client.db("bookRealmDB").collection('books');
+    const borrowCollection = client.db("bookRealmDB").collection('Borrow');
     
     app.get('/books', async(req,res) =>{
       const cursor = booksCollection.find();
@@ -33,7 +34,28 @@ async function run() {
 
       res.send(result)
   })
-    
+  
+  app.get('/books/:id', async(req,res)=>{
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)}
+    const result = await booksCollection.findOne(query)
+    res.send(result)
+  })
+
+  app.post('/books', async(req,res) =>{
+    const newBook = req.body;
+    console.log(newBook)
+    const result = await booksCollection.insertOne(newBook);
+    res.send(result)
+  })
+  
+  app.post('/borrow', async(req,res) =>{
+    const borrowBook = req.body;
+    console.log(borrowBook)
+    const result = await borrowCollection.insertOne(borrowBook);
+    res.send(result)
+  })
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
