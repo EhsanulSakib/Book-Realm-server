@@ -53,7 +53,7 @@ async function run() {
       const { bookId, userName, userEmail, returnDate } = req.body;
       const borrowBooks = await borrowCollection.find({userEmail}).toArray()
       console.log(borrowBooks.length)
-      if(borrowBooks.length > 3){
+      if(borrowBooks.length >= 3){
         return res.status(400).send({message: "You already have 3 borrowed books"})
       }
       const isExist = await borrowCollection.findOne({bookId})
