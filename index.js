@@ -50,7 +50,7 @@ async function run() {
   
   app.post('/borrow', async(req,res) =>{
     try{      
-      const { bookId, userName, userEmail, returnDate } = req.body;
+      const { bookId, userName, userEmail, borrowDate, returnDate } = req.body;
       const borrowBooks = await borrowCollection.find({userEmail}).toArray()
       console.log(borrowBooks.length)
       if(borrowBooks.length >= 3){
@@ -66,7 +66,7 @@ async function run() {
           bookQuantity: (parseInt(book.bookQuantity)-1).toString()
         }
       })
-      const result = await borrowCollection.insertOne({ bookId, userName, userEmail, returnDate });
+      const result = await borrowCollection.insertOne({ bookId, userName, userEmail, borrowDate, returnDate });
       res.send(result)
     }
     catch(error){
