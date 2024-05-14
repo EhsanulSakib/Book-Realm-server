@@ -24,7 +24,6 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
-    // crafts database
     const booksCollection = client.db("bookRealmDB").collection('books');
     const borrowCollection = client.db("bookRealmDB").collection('Borrow');
     
@@ -53,18 +52,18 @@ async function run() {
     try{      
       const { bookId, userName, userEmail, returnDate } = req.body;
       const borrowBooks = await borrowCollection.find({userEmail}).toArray()
-      if(borrowBooks.length === 3){
+      console.log(borrowBooks.length)
+      if(borrowBooks.length > 3){
         return res.status(400).send({message: "You already have 3 borrowed books"})
       }
       const isExist = await borrowCollection.findOne({bookId})
       if(isExist){
         return res.status(400).send({message: "You already borrowed this book"})
       }
-      const book = booksCollection.findOne({_id: new ObjectId(bookId)})
+      const book = await booksCollection.findOne({_id: new ObjectId(bookId)})
       await booksCollection.updateOne({_id: new ObjectId(bookId)}, {
         $set:{
-          ...book,
-          bookQuantity: book.bookQuantity-1
+          bookQuantity: (parseInt(book.bookQuantity)-1).toString()
         }
       })
       const result = await borrowCollection.insertOne({ bookId, userName, userEmail, returnDate });
