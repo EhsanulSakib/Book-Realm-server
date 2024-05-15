@@ -9,7 +9,9 @@ const port = process.env.PORT || 5000;
 
 app.use(cors({
   origin:[
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'https://book-realm-web.web.app',
+    'https://book-realm-web.firebaseapp.com',
 ],
 credentials: true}
 ));
@@ -89,6 +91,28 @@ async function run() {
     const id = req.params.id;
     const query = {_id: new ObjectId(id)}
     const result = await booksCollection.findOne(query)
+    res.send(result)
+  })
+
+  app.put('/books/:id', async(req,res) =>{
+    const id = req.params.id;
+    const filter = {_id: new ObjectId(id)}
+    const options = {upsert: true}
+    const updatedBook = req.body
+    const book={
+      $set:{
+        bookName: updatedBook.bookName,
+        category: updatedBook.category,
+        bookQuantity: updatedBook.bookQuantity,
+        rating: updatedBook.rating,
+        author: updatedBook.author,
+        photo: updatedBook.photo,
+        description: updatedBook.description,
+        aboutBook: updatedBook.aboutBook
+      }
+    }
+
+    const result = await booksCollection.updateOne(filter, book, options)
     res.send(result)
   })
 
